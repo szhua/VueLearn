@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>数字输入框</title>
+    <script src="../static/js/vue.js"  th:src="@{/js/vue.js}" ></script>
+    <script src="../static/js/jquery.min.js"  th:src="@{/js/jquery.min.js}" ></script>
+    <script src="../static/layui/layui.all.js"  th:src="@{/layui/layui.all.js}" ></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+    <script>
+        layui.use(['layer']);
+
+    </script>
+
+</head>
+<body>
+
+<div id="app"  >
+    <input-number v-model="value" :step="step" :max="100" :min="0" ></input-number>
+    <input :value="step" @change="step_sub"  type="number" placeholder="输入步伐">
+</div>
+
+
+
+
+
+ <script>
+
+
+     /**
+      * 是否是数字；
+      * @param value
+      * @returns {boolean}
+      */
+     function isValueNumber(value){
+         return (/(^-?[0-9]+\.{1}\d+$)|(^-?[1-9][0-9]*$)|(^-?0{1}$)/).test(value);
+     }
+
+
+     /**
+      * 增加了对键盘的操作； @keyup.up  @keyup.down 上下键；
+      */
+     Vue.component('input-number',{
+         template:'<div class="input-number"><input type="text"  @keyup.up="handleUp" @keyup.down="handleDown"  :value="currentValue" @change="handleChange"  />' +
+         '<button @click="handleDown" :disabled="currentValue<=min" >-</button>' +
+         '<button @click="handleUp" :disabled="currentValue>=max">+</button>' +
+         '</div>',
+         data:function(){
+             return{
+                 currentValue:this.value
+             }
+         },
+         watch:{
+             currentValue:function (val) {
+                  this.$emit('input',val);
+                  this.$emit('on-change',val);
+             },
+             value:function (val) {
+                 this.updateValue(val);
+             },
+             step:function (val) {
+                 if (!val){
+                     val =1 ;
+                 }
+             }
+         },
+         methods:{
+           handleDown:function(){
+               if (this.currentValue<=this.min) return ;
+               this.currentValue -= this.step  ;
+           },
+           handleUp:function(){
+               if (this.currentValue>=this.max) return ;
+               this.currentValue += this.step;
+           },
+           handleChange:function(event){
+
+               var val =event.target.value.trim();
+               var max =this.max ;
+               var min =this.min ;
+               if (isValueNumber(val)){
+                   val =Number(val) ;
+                   this.currentValue =val ;
+                   if (val>max){
+                       this.currentValue =max ;
+                   } else if (val<min){
+                       this.currentValue =min ;
+                   }
+               }else{
+                   event.target.value=this.currentValue ;
+               }
+           },
+           updateValue:function (val) {
+               if (val>this.max) val = this.max ;
+               if (val<this.min) val =this.min ;
+               this.currentValue = val ;
+           }
+         },
+         mounted:function () {
+             this.updateValue(this.value)
+         }
+         ,
+         props:{
+             max:{
+                 type:Number,
+                 default:Infinity
+             },
+             min:{
+                 type:Number,
+                 default:-Infinity
+             },
+             value:{
+                 type:Number ,
+                 default:11
+             },
+             step:{
+                 type:Number,
+                 defalut:1
+             }
+         }
+     });
+
+    var app =new Vue({
+        el:'#app',
+        data:{
+         test:11,
+            value:5,
+            step:2
+        },
+        watch:{
+            test:function (val) {
+                layer.msg(val);
+            },
+            value:function (val) {
+                layer.msg(val);
+            },
+            step:function (val) {
+               if (isValueNumber(val)){
+                   this.step =Number(val);
+               }
+            }
+        },
+        methods:{
+            step_sub:function (event) {
+                var step =event.target.value.trim();
+                if (isValueNumber(step)){
+                    step  =Number(step) ;
+                    this.step  =step ;
+                }else{
+                    event.target.value=this.step;
+                }
+            }
+        }
+    });
+
+
+
+
+ </script>
+
+</body>
+</html>

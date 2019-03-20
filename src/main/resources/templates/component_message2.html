@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>组件间通讯2</title>
+    <script src="../static/js/vue.js"  th:src="@{/js/vue.js}" ></script>
+    <script src="../static/js/jquery.min.js"  th:src="@{/js/jquery.min.js}" ></script>
+    <script src="../static/layui/layui.all.js"  th:src="@{/layui/layui.all.js}" ></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+    <script>
+        layui.use(['layer']);
+
+    </script>
+
+
+</head>
+<body>
+
+<div id="app"  >
+    Message:{{message}}
+    <component-a></component-a>
+
+
+
+    <hr>
+    Content:{{content}}
+
+    <component-b></component-b>
+
+    <hr>
+
+    <button @click="handleRef">getChildrenComponentInstance </button>
+    <component-c ref="comA"></component-c>
+
+</div>
+
+
+
+
+
+ <script>
+
+     Vue.component('component-c',{
+         template:'<div>Child Component</div>',
+         data:function () {
+             return{
+                 message:'Child Content !!!!'
+             }
+         }
+     });
+
+
+
+     Vue.component('component-b',{
+         template:'<button @click="changeParentMsg">to change data from $parent</button>',
+         methods:{
+             changeParentMsg:function () {
+                 this.$parent.content ='this message is from component-b';
+             }
+         }
+     });
+
+
+
+     var bus =new Vue();
+
+     Vue.component('component-a',{
+         template:'<button @click="handleEvent">传递事件</button>' ,
+         methods:{
+             handleEvent:function () {
+                 bus.$emit('on-message','the message from component A');
+             }
+         }
+     });
+
+
+
+    var app =new Vue({
+        el:'#app',
+        data:{
+            message:'',
+            content:'this is original message '
+        },
+        methods:{
+            handleRef:function () {
+                var msg =this.$refs.comA.message ;
+                layer.msg(msg);
+            }
+        },
+        mounted:function () {
+            var _this =this ;
+            bus.$on('on-message',function (msg) {
+                _this.message =msg ;
+            });
+
+        }
+    });
+
+
+
+
+ </script>
+
+</body>
+</html>

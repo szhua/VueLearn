@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <script src="../static/js/vue.js"  th:src="@{/js/vue.js}" ></script>
+    <script src="../static/js/jquery.min.js"  th:src="@{/js/jquery.min.js}" ></script>
+    <script src="../static/layui/layui.all.js"  th:src="@{/layui/layui.all.js}" ></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+    <script>
+        layui.use(['layer']);
+        // axios.get('/user?ID=12345')
+        //     .then(function (response) {
+        //         console.log(response);
+        //     })
+        //     .catch(function (error) {
+        //         layer.msg(error);
+        //     });
+    </script>
+
+
+</head>
+<body>
+
+<div id="app" v-cloak >
+    <my-component></my-component>
+    <child-component></child-component>
+    <table>
+        <tbody is="my-component"></tbody>
+    </table>
+
+    <span>all changes</span>
+    <count-component></count-component>
+    <count-component></count-component>
+    <count-component></count-component>
+    <count-component></count-component>
+    <br>
+    <span>self change</span>
+    <self-count-component></self-count-component>
+    <self-count-component></self-count-component>
+    <self-count-component></self-count-component>
+    <self-count-component></self-count-component>
+
+    <br>
+    <input type="text" placeholder="input anything change component conent" v-model="premessage">
+    <parent-message-component :message="premessage"></parent-message-component>
+
+    <br>comprae with
+
+    <hr>
+    message
+    <compare-component message="[1,2,3]"></compare-component>
+    :message
+    <compare-component :message="[1,3,3]"></compare-component>
+    
+    <style-component :width="1000">
+        
+    </style-component>
+</div>
+
+
+ <script>
+
+     var data ={
+         counter : 0
+     };
+     Vue.component('style-component',{
+         props:['width'],
+         template:'<div :style="style">this content</div>',
+         computed:{
+             style:function () {
+                 return {
+                     width:this.width+'px',
+                     background:'#a1a9a0'
+                 }
+             }
+         }
+     });
+     
+     
+     Vue.component('compare-component',{
+         props:['message'],
+         template:'<div>{{message.length}}</div>'
+     });
+
+
+     Vue.component('my-component',{
+       template:'<div>this is component {{message}} content</div>',
+         data:function () {
+             return{
+                 message:'111111'
+             };
+         }
+     });
+     Vue.component('count-component',{
+         template:'<button @click="counter++">{{counter}}</button>',
+         data:function () {
+             return  data ;
+         }
+     });
+     Vue.component('parent-message-component',{
+         props:['message'],
+         template:'<div>{{message}}</div>'
+     });
+
+
+     Vue.component('self-count-component',{
+         template:'<button @click="counter++">{{counter}}</button>',
+         data:function () {
+             return  {
+                 counter:0
+             } ;
+         }
+     });
+     var child ={
+         template:'<div>this is a very imoportant test </div>'
+     };
+     var app =new Vue({
+         el:'#app',
+         data:{
+             premessage:'this is a very imoportant test'
+         },
+         components:{
+            'child-component':child
+         }
+     });
+
+
+
+
+ </script>
+
+</body>
+</html>

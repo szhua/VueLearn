@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <script src="../static/js/vue.js"  th:src="@{/js/vue.js}" ></script>
+    <script src="../static/js/jquery.min.js"  th:src="@{/js/jquery.min.js}" ></script>
+    <script src="../static/layui/layui.all.js"  th:src="@{/layui/layui.all.js}" ></script>
+
+    <style>
+
+        .active{
+            background: #00F7DE;
+        }
+        .normalDiv{
+            width: 100px;
+            height: 100px;
+            border: solid 1px;
+        }
+
+    </style>
+
+
+
+    <script>
+
+        layui.use(['layer']);
+
+
+
+    </script>
+
+
+</head>
+<body>
+
+<div id="app" v-cloak >
+    <!--this is first part -->
+
+    <div v-show="false">
+        <input v-model="name">
+        <textarea v-model="name"></textarea>
+        <h1>{{reversedText}}</h1>
+        <br>
+        <a   :href="url">this is a link </a>
+        <img :src="imgUrl" style="width: 100px;">
+        <div   class="normalDiv" :class="{'active':isActive}"></div>
+        <button   @click="isActive = !isActive">change status</button>
+        <p v-if="status === 1">status = 1</p>
+        <p v-else-if ="status === 2">status = 2</p>
+        <p v-else>status = 其他{{status}}</p>
+        <button @click="num_status">num_status</button>
+        <br>
+        <template v-if="type === 'name'">
+            <label>用户名：</label>
+            <input placeholder="输入用户名" key="name-input">
+        </template>
+        <template v-if="type === 'email'">
+            <label>邮箱：</label>
+            <input placeholder="输入邮箱">
+        </template>
+
+        <button @click="hangleToggleClick" key="name-input">ToggleLoginType</button>
+        <p v-show="status===1">测试show属性</p>
+        <ul>
+            <li v-for="(book,index) of books"><a href="index.html">{{index+1}}---{{book.name}}</a></li>
+        </ul>
+
+    </div>
+    <ul>
+
+        <template v-for="(book,index) in books">
+            <li>书名:{{book.name}}</li>
+            <li>作者:{{book.author}}</li>
+            <hr>
+        </template>
+    </ul>
+    <span>遍历属性</span>
+    <ul>
+        <li v-for="(value,field,index) in user">[{{index+1}}]--{{field}}:{{value}}</li>
+    </ul>
+
+    <span v-for="n in 10">&nbsp;&nbsp;&nbsp;&nbsp;this is {{n}}</span>
+
+    <button @click="pushBooks">push</button>
+
+
+</div>
+
+
+ <script>
+
+     var plus =true ;
+
+     var vue =new Vue({
+         el:'#app',
+         data:{
+             message:'tfboys',
+             name:'rrr',
+             url:"https://www.github.com",
+             imgUrl:'/img/vue.jpg',
+             isActive:true,
+             status:1,
+             type:'name',
+             books:[
+                 {name:'《Vue.js 实战》',author:'梁灏',age:11},
+                 {name:'《JavaScript 语言精髓》',author:'Douglas Crokford',age:12},
+                 {name:'《JavaScript 高级程序设计》',author:'Nicholas C.Zakas',age:14}
+             ],
+             user:{
+                 name:'szhua',
+                 age:22,
+                 gendar:'Man'
+             }
+         },
+         methods:{
+
+             pushBooks:function(){
+               // this.books.push({
+               //     name:'《CSS揭秘》',
+               //     author:'TOm'
+               // });
+                // this.books.unshift({name:'《CSS揭秘》',author:'szhua'});
+                 this.books.sort(function (a,b) { return b-a });
+                 layer.alert(JSON.stringify(this.books));
+             },
+             hangleToggleClick:function(){
+               if (this.type === 'name'){
+                   this.type ='email';
+               }else{
+                   this.type ='name'
+               }
+             },
+             num_status:function () {
+                 if (plus){
+                     this.status++;
+                 } else{
+                     this.status-- ;
+                 }
+                 if (this.status==1){
+                     plus =true ;
+                 }
+                 if (this.status ==3){
+                     plus =false ;
+                 }
+
+
+
+             }
+         },
+         computed:{
+             reversedText:function () {
+                 return this.name.split('').reverse().join('');
+             }
+         }
+     });
+
+
+
+
+
+ </script>
+
+</body>
+</html>

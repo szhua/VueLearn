@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>组件间通讯</title>
+    <script src="../static/js/vue.js"  th:src="@{/js/vue.js}" ></script>
+    <script src="../static/js/jquery.min.js"  th:src="@{/js/jquery.min.js}" ></script>
+    <script src="../static/layui/layui.all.js"  th:src="@{/layui/layui.all.js}" ></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+    <script>
+        layui.use(['layer']);
+        // axios.get('/user?ID=12345')
+        //     .then(function (response) {
+        //         console.log(response);
+        //     })
+        //     .catch(function (error) {
+        //         layer.msg(error);
+        //     });
+    </script>
+
+
+</head>
+<body>
+
+<div id="app"  >
+    <p>总数:{{total}}</p>
+    <my-component
+    @click.native="handleClick"
+    @increase="handleGetTotal"
+    @reduce="handleGetTotal"
+    >
+    </my-component>
+
+    <p>总数：{{all}}</p>
+    <model-component  @input="handleGetAll">
+
+    </model-component>
+
+    <p>总数{{total_all}}</p>
+
+    <model-input-component v-model="total_all"></model-input-component>
+    <button @click="handleReduce">-1</button>
+
+</div>
+
+
+
+
+ <script>
+
+
+     Vue.component('model-input-component',{
+         template:'<input  @input="updateValue">',
+         methods:{
+             updateValue: function (event) {
+                  this.$emit('input',event.target.value);
+             }
+         }
+     });
+
+
+
+
+     Vue.component('my-component',{
+         template:'<div>' +
+                     '<button     @click="handleIncrease">+1</button> ' +
+                     '<button @click="handleReduce">-1</button>' +
+         '</div>',
+          data:function () {
+              return {
+                  counter:0
+              }
+          },
+         methods:{
+             handleIncrease:function(){
+                 this.counter++ ;
+                 this.$emit('increase',this.counter);
+             },
+             handleReduce:function (){
+                 this.counter--;
+                 this.$emit('reduce',this.counter);
+             }
+         }
+     });
+
+     Vue.component('model-component',{
+         template:'<button @click="handleClick">+1</button>',
+         data:function () {
+             return {
+                 counter:0
+             }
+         },
+         methods:{
+             handleClick:function () {
+                 this.counter++ ;
+                 this.$emit('input',this.counter);
+             }
+         }
+     });
+
+
+     var app =new Vue({
+         el:'#app',
+         data:{
+             total:0,
+             all:0,
+             total_all:0
+         },
+         methods:{
+             handleClick:function(){
+                 layer.msg('wwww');
+             },
+             handleReduce:function(){
+                 this.total_all-- ;
+             },
+             handleGetTotal:function (total) {
+                 this.total=total;
+             },
+             handleGetAll:function (all) {
+                 this.all =all ;
+             }
+         }
+     });
+
+
+
+
+ </script>
+
+</body>
+</html>

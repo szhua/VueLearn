@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>组件间通讯2</title>
+    <script src="../static/js/vue.js"  th:src="@{/js/vue.js}" ></script>
+    <script src="../static/js/jquery.min.js"  th:src="@{/js/jquery.min.js}" ></script>
+    <script src="../static/layui/layui.all.js"  th:src="@{/layui/layui.all.js}" ></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+    <script>
+        layui.use(['layer']);
+
+    </script>
+
+    <style>
+
+        .child{
+            width: 100px;
+            height: 100px;
+            background: #00F7DE;
+            color: white;
+            border: 1px saddlebrown solid;
+            left: 20px;
+            position: relative;
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+<div id="app"  >
+
+    <child_component :count="1">
+        <h1>this is title</h1>
+
+    </child_component>
+
+
+
+    <hr style="margin-top: 200px">
+
+    <inline_component inline-template>
+        <div>
+            <h2>在父组件中定义子组件的模板</h2>
+            <p>{{ message }}</p>
+            <p>{{msg}}</p>
+        </div>
+    </inline_component>
+
+    <component :is="currentView"></component>
+    <button @click="handleChangeView('A')">切换到A</button>
+    <button @click="handleChangeView('B')">切换到B</button>
+    <button @click="handleChangeView('C')">切换到C</button>
+
+
+</div>
+
+
+
+
+
+ <script>
+
+     
+     
+     
+     
+
+
+     Vue.component('inline_component',{
+         data:function () {
+             return{
+                 msg:'在子组件中声明的数据'
+             }
+         }
+     });
+
+
+
+
+     Vue.component('child_component',{
+         name:'child_component',
+         props:{
+             count:{
+                 type:Number,
+                 default:1
+             }
+         },
+         template:'<div class="child"> <ul><li>111</li><li>2222</li></ul> <child_component :count="count+1" v-if="count < 3"></child_component></div>'
+     });
+
+
+    var app =new Vue({
+        el:'#app',
+        data:{
+            message:'在父组件中声明的数据',
+            currentView:'comA'
+        },
+        components:{
+            comA:{
+                template:'<div>组件A</div>'
+            },
+            comB:{
+                template:'<div>组件B</div>'
+            },
+            comC:{
+                template:'<div>组件C</div>'
+            }
+        }
+        ,methods:{
+            handleChangeView:function (component) {
+                this.currentView ='com'+component;
+            }
+        }
+
+
+    });
+
+
+
+
+ </script>
+
+</body>
+</html>

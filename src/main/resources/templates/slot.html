@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title>组件间通讯2</title>
+    <script src="../static/js/vue.js"  th:src="@{/js/vue.js}" ></script>
+    <script src="../static/js/jquery.min.js"  th:src="@{/js/jquery.min.js}" ></script>
+    <script src="../static/layui/layui.all.js"  th:src="@{/layui/layui.all.js}" ></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+
+    <script>
+        layui.use(['layer']);
+
+    </script>
+
+
+</head>
+<body>
+
+<div id="app"  >
+
+
+    <child-component>
+        <p>分发的内容</p>
+        <p>更多分发的内容</p>
+        <div slot="footer">底部的信息</div>
+        <h2 slot="header">标题</h2>
+    </child-component>
+
+
+
+    <hr/>
+
+    <scope-component>
+        <template scope="props">
+            <p>来自父组件的内容</p>
+            <p>{{props.msg}}</p>
+        </template>
+    </scope-component>
+
+    <hr/>
+
+    <my-list :book_items="bookArray" >
+        <template  slot="book" scope="props" >
+            <li>{{props.bookName}}</li>
+        </template>
+    </my-list>
+
+</div>
+
+
+
+
+
+ <script>
+
+     Vue.component('my-list',{
+         props:{
+             book_items:{
+                 type:Array,
+                 default:function () {
+                     return [{name:'wwwww'}] ;
+                 }
+             }
+         },
+         template:'<ul>\n' +
+         '        <slot name="book" v-for="book in book_items" :book-name="book.name">\n' +
+         '\n' +
+         '        </slot>\n' +
+         '    </ul>'
+     });
+
+
+     Vue.component('scope-component',{
+         template:'<div class="container">\n' +
+         '       <slot msg="这是来自子组件的内容"></slot>\n' +
+         '    </div>'
+     });
+
+
+
+
+     Vue.component('child-component',{
+         template:'<div class="container"> ' +
+                     '<div class="header">' +
+                        '<slot name="header"></slot>' +
+                     '</div>' +
+                      '<div class="main">' +
+                          '<slot></slot>'+
+                      '</div>'+
+                      '<div class="footer">' +
+                            '<slot name="footer"></slot>'+
+                      '</div>'+
+                  '</div>',
+         mounted:function () {
+             var header =this.$slots.header ;
+             var main =this.$slots.default ;
+             var footer =this.$slots.footer ;
+             console.log(footer);
+             console.log(header);
+             console.log(main);
+         }
+     });
+
+    var app =new Vue({
+        el:'#app',
+        data:{
+            bookArray:[
+                {name:'《Vue.js实战》'},
+                {name:'《Vue.js展示》'},
+                {name:'《Vue.js哈哈》'}
+
+            ]
+        }
+
+    });
+
+
+
+
+ </script>
+
+</body>
+</html>
