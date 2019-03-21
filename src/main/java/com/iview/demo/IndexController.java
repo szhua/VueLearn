@@ -73,6 +73,17 @@ public class IndexController {
     }
 
 
+    @RequestMapping(value ="directive")
+    public String  directive(){
+        return  "directive" ;
+    }
+
+
+    @RequestMapping(value ="outsideMenu")
+    public String  outsideMenu(){
+        return  "outsideMenu" ;
+    }
+
 
 
 
