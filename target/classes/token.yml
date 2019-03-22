@@ -1,0 +1,7 @@
+# APP模块
+jwt:
+    # token 加密秘钥
+    secret: 3733b9170b1e4994bddcf1ce62c4c082
+    # token有效时长，7天，单位秒
+    expire: 604800
+    header: token

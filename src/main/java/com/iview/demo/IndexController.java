@@ -21,7 +21,6 @@ public class IndexController {
     //购物车实战
     @RequestMapping(value = "cart")
     public String cart(){
-
         return "cart";
     }
 
@@ -30,7 +29,6 @@ public class IndexController {
     public String vModel(){
         return "v_model_practice";
     }
-
 
     //组件
     @RequestMapping(value = "component")

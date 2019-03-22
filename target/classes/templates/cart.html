@@ -47,6 +47,10 @@
 </head>
 <body>
 
+
+<button id="login">登录</button>
+<button id="token">token授权</button>
+
 <div id="app" v-cloak >
     <!--this is first part -->
     <template v-if="list.length">
@@ -89,6 +93,46 @@
 
  <script>
 
+
+     var token ="" ;
+
+
+     $('#login').click(function () {
+         $.ajax({
+             url:'/api/login',
+             data:JSON.stringify({
+                 username:'szhua',
+                 password:'123456'
+             }),
+             type:'post',
+             contentType: 'application/json',
+             success:function (data) {
+                 layer.msg(JSON.stringify(data));
+                 token =data.token ;
+             },
+             error:function (data) {
+                 layer.msg(JSON.stringify(data));
+             }
+         });
+     });
+     $('#token').click(function () {
+         $.ajax({
+             url:'/api/getMessage',
+             beforeSend:function(request){
+                 if (!token){
+                     layer.msg('token未获得');
+                     return false ;
+                 }
+                 request.setRequestHeader("token",'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOlsiMSIsIjE1NTMyMjUwOTE1NTIiXX0.xqAMq6JuP_iDLOZ6icYZAwZ6Vuep1hneU-kOjTVrVJY');
+             },
+             success:function (data) {
+                 layer.msg(JSON.stringify(data));
+             },
+             error:function (data) {
+                 layer.msg(JSON.stringify(data));
+             }
+         });
+     });
 
 
      var app =new Vue({
